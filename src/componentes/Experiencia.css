@@ -1,0 +1,22 @@
+.exp{
+    border: 2px solid bisque;
+    border-radius: 10px;   
+    padding: 30px;
+    margin: 30px;
+}
+.exp p{
+    color: rgb(49, 49, 49);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.exp h2{
+    color: rgb(49, 49, 49);
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

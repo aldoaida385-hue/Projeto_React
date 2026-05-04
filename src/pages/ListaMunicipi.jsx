@@ -1,80 +1,62 @@
-import { useEffect, useState } from "react";
-import { UNSAFE_DataRouterStateContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import apiMunicipios from "../_service/apiMunicipios";
+import { Col, Row, Container } from "react-bootstrap"; // Adicionei Container para alinhar
 
-function ListaMunicipio() {
+function ListaEstadosMunicipios() {
   const [estados, setEstados] = useState([]);
-  const [municipios, setMunicipios] = useState([]);
+  const [municipios, setmunicipios] = useState([]);
+
+  async function buscarEstado() {
+    try {
+      const resposta = await apiMunicipios.get("/estados");
+      setEstados(resposta.data);
+    } catch (error) {
+      alert("Sem sucesso para buscar os estados");
+    }
+  }
+
+  async function buscarMunicipios() {
+    try {
+      // Por enquanto fixo no Maranhão
+      const resposta = await apiMunicipios.get("/estados/MA/municipios");
+      setmunicipios(resposta.data);
+    } catch (error) {
+      alert("Sem sucesso para buscar os municipios");
+    }
+  }
 
   useEffect(() => {
-    buscarEstados();
+    buscarEstado(); // Ponto e vírgula ou apenas nova linha
+    buscarMunicipios();
   }, []);
 
-  async function buscarEstados() {
-    try {
-      const response = await fetch(
-        "https://servicodados.ibge.gov.br/api/v1/localidades/estados"
-      );
-
-      const data = await response.json();
-
-      setEstados(data);
-    } catch (error) {
-      console.error("Erro ao buscar estados:", error.message);
-    }
-  }
-
-  async function buscarMunipios(uf) {
-    try {
-      const response = await fetch(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
-      );
-
-      const data = await response.json();
-
-      setMunicipios(data);
-    } catch (error) {
-      console.error("Erro ao buscar estados:", error.message);
-    }
-  }
-
-  function onchangeSelect(event) {
-    const uf = event.target.value;
-
-    if (!uf) {
-      return;
-    }
-
-    buscarMunipios(uf);
-  }
-
   return (
-    <div className="container">
-      <h1>Lista de Municípios</h1>
+    <Container>
+      <Row>
+        <Col>
+          <h1>Estados</h1>
+          <ul>
+            {estados.map((estado) => (
+              <li key={estado.id}><strong>{estado.nome}</strong></li>
+            ))}
+          </ul>
+        </Col>
 
-      <select onChange={onchangeSelect}>
-        <option value="">Selecione um estado</option>
-        {estados.map((estado) => {
-          return (
-            <option key={estado.id} value={estado.sigla}>
-              {estado.nome}
-            </option>
-          );
-        })}
-      </select>
-
-      <div>
-        <ul>
-          {municipios.map((municipio) => {
-            return (
-              <div key={municipio.id}>
-                <li>{municipio.nome} | {municipio.microrregiao.mesorregiao.nome}</li>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
+        <Col>
+          <h1>Municípios (MA)</h1>
+          <ul>
+            {municipios.map((municipio) => (
+              <li key={municipio.id}>
+                <strong>{municipio.nome}</strong><br />
+                <span>{municipio.microrregiao?.nome || municipio.mesorregiao?.nome || "Região não Encontrado"} </span>
+              </li>            
+            ))}
+          </ul>
+        
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
-export { ListaMunicipio };
+export { ListaEstadosMunicipios };

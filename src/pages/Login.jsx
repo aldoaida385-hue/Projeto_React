@@ -7,16 +7,21 @@ import { useNavigate } from "react-router-dom";
 function Login() {
 
     const [email, setEmail] = useState("alunos@teste.com")
-    const [senha, setSenha] = useState("123@123")
+    const [senha, setSenha] = useState("")
 
     let navigate = useNavigate()
 
     function alteraSenha(event) {
+        event.preventDefault()
+        console.log(event)
+        console.log(event.target)
+        console.log(event.target.value)
         setSenha(event.target.value)
     }
 
     async function enviaDados() {
         // alert (`enviar para API ${email} ${senha}`)
+
 
         try {
 
@@ -55,8 +60,8 @@ function Login() {
             <div className="containerLogin">
                 <h1>Login</h1>
                 <div className="div-input">
-                    <label>Email {email}</label>
-                    <input type="email" onChange={(event) => setEmail(event.target.value)} />
+                    <label >Email {email}</label>
+                    <input type="email" value={email} placeholder={email} onChange={(event) => setEmail(event.target.value)} />
                 </div>
                 <div className="div-input">
                     <label>Senha {senha}</label>
